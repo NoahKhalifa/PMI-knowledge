@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Management Dashboard — PMP | PgMP | PfMP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+<div class="header">
+    <div class="header-title">
+        <div class="logo-icon">PM</div>
+        <h1>Management Dashboard<span>PMP &bull; PgMP &bull; PfMP Guideline</span></h1>
+    </div>
+    <div class="tabs">
+        <div class="tab active" onclick="showTab(0)">Project Management <span class="badge">PMP</span></div>
+        <div class="tab" onclick="showTab(1)">Program Management <span class="badge">PgMP</span></div>
+        <div class="tab" onclick="showTab(2)">Portfolio Management <span class="badge">PfMP</span></div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="tab-content" id="tab0"><div class="tab-loading">Loading...</div></div>
+    <div class="tab-content" id="tab1" style="display:none"><div class="tab-loading">Loading...</div></div>
+    <div class="tab-content" id="tab2" style="display:none"><div class="tab-loading">Loading...</div></div>
+</div>
+
+<!-- POPUP -->
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3 id="modalTitle"></h3>
+        </div>
+        <div class="modal-body">
+            <p id="modalContent"></p>
+        </div>
+    </div>
+</div>
+
+<!-- JS: Glossary & Components -->
+<script src="js/glossary.js"></script>
+<script src="js/components.js"></script>
+
+<!-- Content registry (must be before data files) -->
+<script>const tabContent = {};</script>
+
+<!-- Data files -->
+<script src="data/process-data.js"></script>
+<script src="data/project-management.js"></script>
+<script src="data/program-management.js"></script>
+<script src="data/portfolio-management.js"></script>
+
+<!-- App logic -->
+<script src="js/app.js"></script>
+<script>renderTabs();</script>
+
+</body>
+</html>
