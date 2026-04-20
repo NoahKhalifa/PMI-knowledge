@@ -11,8 +11,14 @@
  */
 function renderTabs() {
     for (const [index, html] of Object.entries(tabContent)) {
-        const container = document.getElementById('tab' + index);
-        if (container) container.innerHTML = html;
+        // Check if this is a sub-tab key like "0-0", "0-1", "0-2"
+        if (String(index).includes('-')) {
+            const container = document.getElementById('tab' + index.replace('-', '-sub'));
+            if (container) container.innerHTML = html;
+        } else {
+            const container = document.getElementById('tab' + index);
+            if (container) container.innerHTML = html;
+        }
     }
     enhanceTableItems();
 }
@@ -41,7 +47,7 @@ function enhanceTableItems() {
     });
 
     // Enhance Knowledge Area cells (first column) with tooltip
-    document.querySelectorAll('#tab0 tr td:first-child').forEach(td => {
+    document.querySelectorAll('#tab0 tr td:first-child, #tab0-sub1 tr td:first-child').forEach(td => {
         const text = td.textContent.trim();
         // Extract the KA name (e.g. "4. Project Integration Management" -> "Project Integration Management")
         const kaName = text.replace(/^\d+\.\s*/, '');
@@ -73,6 +79,31 @@ function showTab(index) {
 }
 
 /**
+ * Switch between sub-tabs within a parent tab.
+ */
+function showSubTab(parentIndex, subIndex) {
+    const parent = document.getElementById('tab' + parentIndex);
+    if (!parent) return;
+
+    const subContents = parent.querySelectorAll('.sub-tab-content');
+    const subButtons = parent.querySelectorAll('.sub-tab');
+
+    subContents.forEach(s => s.style.display = 'none');
+    subButtons.forEach(b => b.classList.remove('active'));
+
+    subContents[subIndex].style.display = 'block';
+    subButtons[subIndex].classList.add('active');
+
+    // Re-enhance items in newly visible sub-tab
+    enhanceTableItems();
+
+    // Redraw activity diagram connectors when switching to Implementation tab
+    if (parentIndex === 0 && subIndex === 0 && typeof drawConnectors === 'function') {
+        setTimeout(drawConnectors, 150);
+    }
+}
+
+/**
  * Open modal with ITTO data or Knowledge Area overview.
  * Uses components.js for rendering and glossary.js for tooltips.
  */
@@ -97,4 +128,49 @@ function openModal(title) {
  */
 function closeModal() {
     document.getElementById("modal").style.display = "none";
+    // Clear activity diagram highlights when modal closes
+    if (typeof highlightActivity === 'function') highlightActivity(null);
+}
+
+/**
+ * Open modal with role detail from Implementation matrix.
+ */
+function openRoleModal(roleName) {
+    const data = roleData[roleName];
+    if (!data) return;
+
+    document.getElementById("modalTitle").innerText = data.icon + ' ' + roleName;
+    const body = document.querySelector(".modal-body");
+
+    const respList = data.responsibilities.map(r => `<li>▸ ${r}</li>`).join('');
+    const kpiTags = data.kpis.map(k => `<span class="kpi-tag">${k.icon} ${k.name}</span>`).join('');
+    const focusCards = (data.focusAreas || []).map(f =>
+        `<div class="focus-card">
+            <div class="focus-card-title">${f.icon} ${f.name}</div>
+            <div class="focus-card-desc">${f.desc}</div>
+        </div>`
+    ).join('');
+
+    body.innerHTML = `
+        <div class="role-modal-grid">
+            <div class="role-desc">${data.shortDesc}</div>
+
+            <div class="role-section responsibilities">
+                <h4>📌 Vai trò & Trách nhiệm</h4>
+                <ul>${respList}</ul>
+            </div>
+
+            <div class="role-section kpis">
+                <h4>📊 KPI / Chỉ số theo dõi</h4>
+                <div class="kpi-tags">${kpiTags}</div>
+            </div>
+
+            <div class="role-section focus">
+                <h4>🎯 Key Focus Areas</h4>
+                <div class="focus-cards">${focusCards}</div>
+            </div>
+        </div>
+    `;
+
+    document.getElementById("modal").style.display = "flex";
 }

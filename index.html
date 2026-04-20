@@ -23,7 +23,17 @@
 </div>
 
 <div class="content">
-    <div class="tab-content" id="tab0"><div class="tab-loading">Loading...</div></div>
+    <div class="tab-content" id="tab0">
+        <!-- Sub-tabs for Project Management -->
+        <div class="sub-tabs">
+            <div class="sub-tab active" onclick="showSubTab(0, 0)">🚀 Implementation</div>
+            <div class="sub-tab" onclick="showSubTab(0, 1)">📋 Project Knowledge Areas</div>
+            <div class="sub-tab" onclick="showSubTab(0, 2)">🔄 49 Processes PMP Flow</div>
+        </div>
+        <div class="sub-tab-content" id="tab0-sub0"><div class="tab-loading">Loading...</div></div>
+        <div class="sub-tab-content" id="tab0-sub1" style="display:none"><div class="tab-loading">Loading...</div></div>
+        <div class="sub-tab-content" id="tab0-sub2" style="display:none"><div class="tab-loading">Loading...</div></div>
+    </div>
     <div class="tab-content" id="tab1" style="display:none"><div class="tab-loading">Loading...</div></div>
     <div class="tab-content" id="tab2" style="display:none"><div class="tab-loading">Loading...</div></div>
 </div>
@@ -50,13 +60,35 @@
 
 <!-- Data files -->
 <script src="data/process-data.js"></script>
+
+<!-- KA Components (populate processData & kaRows) -->
+<script src="data/component/ka-integration.js"></script>
+<script src="data/component/ka-scope.js"></script>
+<script src="data/component/ka-schedule.js"></script>
+<script src="data/component/ka-cost.js"></script>
+<script src="data/component/ka-quality.js"></script>
+<script src="data/component/ka-resource.js"></script>
+<script src="data/component/ka-communications.js"></script>
+<script src="data/component/ka-risk.js"></script>
+<script src="data/component/ka-procurement.js"></script>
+<script src="data/component/ka-stakeholder.js"></script>
+
+<!-- Implementation sub-components (load in order) -->
+<script src="data/component/impl/impl-config.js"></script>
+<script src="data/component/impl/impl-activities.js"></script>
+<script src="data/component/impl/impl-render.js"></script>
+<script src="data/component/impl/impl-interaction.js"></script>
+<script src="data/component/implementation.js"></script>
+<script src="data/component/pmp-flow.js"></script>
+
+<!-- Tab content (uses kaRows from components) -->
 <script src="data/project-management.js"></script>
 <script src="data/program-management.js"></script>
 <script src="data/portfolio-management.js"></script>
 
 <!-- App logic -->
 <script src="js/app.js"></script>
-<script>renderTabs();</script>
+<script>renderTabs(); initActivityDiagram();</script>
 
 </body>
 </html>
